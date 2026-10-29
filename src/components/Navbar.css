@@ -1,0 +1,27 @@
+.navbar { position: sticky; top: 0; z-index: 60; transition: background .3s, box-shadow .3s; }
+.navbar--solid { background: color-mix(in srgb, var(--surface) 92%, transparent); backdrop-filter: blur(14px); box-shadow: 0 1px 0 var(--border); }
+.navbar__inner { display: flex; align-items: center; justify-content: space-between; height: 72px; gap: 16px; }
+.navbar__links { display: flex; gap: 32px; }
+.navbar__links a { font-weight: 500; color: var(--text); position: relative; padding: 6px 0; }
+.navbar__links a::after { content: ''; position: absolute; left: 0; bottom: 0; height: 2px; width: 0; background: var(--accent); transition: width .25s; }
+.navbar__links a:hover::after { width: 100%; }
+.navbar__actions { display: flex; align-items: center; gap: 10px; }
+.navbar__cta { padding: 10px 22px; min-height: 44px; font-size: 1rem; }
+.navbar__icon { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 1.05rem; display: grid; place-items: center; }
+.navbar__burger { display: none; }
+.navbar__burger span, .navbar__burger span::before { display: block; width: 18px; height: 2px; background: var(--navy); border-radius: 2px; position: relative; transition: transform .25s; }
+.navbar__burger span::before { content: ''; position: absolute; top: 6px; left: 0; }
+.navbar__burger span::after { content: ''; position: absolute; top: -6px; left: 0; width: 18px; height: 2px; background: var(--navy); border-radius: 2px; transition: transform .25s; }
+.navbar__burger span.is-x { background: transparent; }
+.navbar__burger span.is-x::before { transform: translateY(-6px) rotate(45deg); }
+.navbar__burger span.is-x::after { transform: translateY(6px) rotate(-45deg); }
+.navbar__mobile { display: none; }
+
+@media (max-width: 900px) {
+  .navbar__links, .navbar__cta { display: none; }
+  .navbar__burger { display: grid; }
+  .navbar__mobile { display: flex; flex-direction: column; gap: 6px; position: fixed; inset: 72px 0 0 0; background: var(--bg); padding: 24px 6% 40px; overflow-y: auto; transform: translateY(-8px); opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s; }
+  .navbar__mobile.is-open { opacity: 1; transform: none; pointer-events: auto; }
+  .navbar__mobile a:not(.btn) { font-family: var(--font-head); font-size: 1.7rem; font-weight: 600; color: var(--navy); padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .navbar__mobile .btn { margin-top: 22px; }
+}

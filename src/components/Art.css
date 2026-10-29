@@ -1,0 +1,4 @@
+.imgslot { width: 100%; height: 100%; overflow: hidden; }
+.imgslot img, .imgslot svg { width: 100%; height: 100%; object-fit: cover; }
+.art-plane { animation: glide 6s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+@keyframes glide { 50% { transform: translate(14px, -10px) rotate(-2deg); } }

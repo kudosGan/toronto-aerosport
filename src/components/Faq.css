@@ -1,0 +1,9 @@
+.faq__inner { max-width: 820px; }
+.faq__item { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 12px; overflow: hidden; }
+.faq__item button { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 20px 24px; background: none; border: 0; color: var(--text); font-weight: 600; font-size: 1.05rem; text-align: left; }
+.faq__item button span { font-size: 1.6rem; color: var(--red); transition: transform .3s; }
+.faq__item.is-open button span { transform: rotate(45deg); }
+.faq__a { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s ease; }
+.faq__a p { overflow: hidden; margin: 0; padding: 0 24px; color: var(--muted); }
+.faq__item.is-open .faq__a { grid-template-rows: 1fr; }
+.faq__item.is-open .faq__a p { padding-bottom: 20px; }

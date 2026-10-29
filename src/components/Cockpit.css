@@ -1,0 +1,11 @@
+.cockpit { background: var(--surface); }
+.cockpit__inner { display: grid; grid-template-columns: .95fr 1.05fr; gap: clamp(24px, 5vw, 64px); align-items: center; }
+.cockpit__img { aspect-ratio: 3 / 2; border-radius: 24px; overflow: hidden; box-shadow: var(--shadow); border: 6px solid var(--bg); max-width: 520px; width: 100%; justify-self: center; }
+.cockpit__copy h2 { font-size: clamp(1.9rem, 4vw, 2.7rem); }
+.cockpit__copy > p { color: var(--muted); font-size: 1.1rem; }
+.cockpit ul { list-style: none; margin: 20px 0 26px; padding: 0; display: grid; gap: 12px; }
+.cockpit li { display: flex; gap: 14px; align-items: center; background: var(--bg); border: 1px solid var(--border); border-radius: 16px; padding: 12px 16px; }
+.cockpit li > span { font-size: 1.6rem; }
+.cockpit li strong { display: block; font-family: var(--font-head); font-size: 1.1rem; color: var(--navy); }
+.cockpit li small { color: var(--muted); font-size: .95rem; }
+@media (max-width: 820px) { .cockpit__inner { grid-template-columns: 1fr; } .cockpit__copy .btn { width: 100%; } }

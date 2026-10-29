@@ -1,0 +1,17 @@
+.where__inner { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+.where h2 { font-size: clamp(2rem, 4vw, 3rem); color: var(--blue-dark); }
+[data-theme='night'] .where h2 { color: var(--text); }
+.where ul { list-style: none; padding: 0; margin: 0 0 24px; display: grid; gap: 6px; }
+.where__map { position: relative; height: 340px; border-radius: 24px; border: 1px solid var(--border); background:
+  radial-gradient(circle at 30% 80%, rgba(11,87,181,.25), transparent 35%),
+  repeating-linear-gradient(0deg, transparent 0 39px, var(--border) 39px 40px),
+  repeating-linear-gradient(90deg, transparent 0 39px, var(--border) 39px 40px), var(--surface); overflow: hidden; }
+.where__pin { position: absolute; top: 32%; left: 52%; font-size: 2.4rem; transform: translate(-50%, -50%); animation: drop 1.6s ease-in-out infinite; }
+.where__pulse { position: absolute; top: 40%; left: 52%; width: 14px; height: 14px; border-radius: 50%; background: var(--red); transform: translate(-50%, -50%); }
+.where__pulse::after { content: ''; position: absolute; inset: 0; border-radius: 50%; background: var(--red); animation: ping 1.8s ease-out infinite; }
+.where__label { position: absolute; font-weight: 600; font-size: .8rem; background: var(--surface); border: 1px solid var(--border); padding: 4px 10px; border-radius: 999px; }
+.where__label--gta { bottom: 16%; left: 14%; }
+.where__label--bw { top: 46%; left: 58%; }
+@keyframes drop { 50% { transform: translate(-50%, -62%); } }
+@keyframes ping { to { transform: scale(5); opacity: 0; } }
+@media (max-width: 800px) { .where__inner { grid-template-columns: 1fr; } }

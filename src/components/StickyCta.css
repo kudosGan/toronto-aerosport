@@ -1,0 +1,7 @@
+.stickycta { display: none; }
+@media (max-width: 760px) {
+  .stickycta { display: block; position: fixed; left: 0; right: 0; bottom: 0; z-index: 55; padding: 10px 4%; background: color-mix(in srgb, var(--surface) 92%, transparent); backdrop-filter: blur(10px); border-top: 1px solid var(--border); transform: translateY(110%); transition: transform .3s; }
+  .stickycta.is-visible { transform: none; }
+  .stickycta .btn { width: 100%; }
+  .footer__top { bottom: 80px !important; }
+}

@@ -1,0 +1,4 @@
+.logo { display: inline-flex; flex-direction: column; line-height: .92; font-family: var(--font-head); font-style: italic; }
+.logo__top { color: #e63329; font-size: .72rem; letter-spacing: .32em; font-weight: 700; padding-left: 3px; }
+.logo__main { color: var(--blue); font-size: 1.75rem; font-weight: 800; }
+.logo__main small { font-size: .85rem; margin-left: 2px; }

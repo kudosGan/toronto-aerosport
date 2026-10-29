@@ -1,0 +1,28 @@
+.compare { background: var(--tint); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.compare__wrap { background: var(--surface); border-radius: 24px; box-shadow: var(--shadow); overflow: hidden; }
+.compare__table { width: 100%; border-collapse: collapse; }
+.compare__table th, .compare__table td { padding: 18px 22px; text-align: left; border-bottom: 1px solid var(--border); }
+.compare__table thead th { font-family: var(--font-head); font-size: 1.2rem; color: var(--navy); }
+.compare__table tbody th { color: var(--muted); font-weight: 500; }
+.compare__table tbody tr:last-child > * { border-bottom: 0; }
+.compare__table .is-us { background: color-mix(in srgb, var(--blue) 10%, var(--surface)); font-weight: 600; }
+.compare__table thead .is-us { background: var(--blue); color: #fff; }
+.compare__table thead em { display: block; font-style: normal; font-family: var(--font-body); font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--yellow); }
+.compare__table .is-hot td.is-us { color: var(--accent); }
+.compare__note { margin: 28px 0 8px; font-size: 1.1rem; }
+.compare__src { font-size: .85rem; color: var(--muted); }
+.compare__src a { text-decoration: underline; }
+
+/* Phones: each row becomes a small card */
+@media (max-width: 720px) {
+  .compare__wrap { background: transparent; box-shadow: none; border-radius: 0; }
+  .compare__table, .compare__table tbody, .compare__table tr, .compare__table td, .compare__table th { display: block; }
+  .compare__table thead { display: none; }
+  .compare__table tr { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; margin-bottom: 14px; overflow: hidden; }
+  .compare__table tbody th { background: var(--navy); color: #fff; padding: 12px 18px; font-family: var(--font-head); font-weight: 600; }
+  [data-theme='night'] .compare__table tbody th { color: #08142b; }
+  .compare__table td { display: flex; justify-content: space-between; gap: 12px; padding: 12px 18px; }
+  .compare__table td::before { content: attr(data-label); color: var(--muted); font-weight: 400; }
+  .compare__table td.is-us::before { color: var(--blue); font-weight: 600; }
+}

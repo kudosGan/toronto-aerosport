@@ -1,0 +1,19 @@
+.intro { background: linear-gradient(160deg, #0a1f44, #123c85); color: #fff; }
+.intro h2, .intro h3 { color: #fff; }
+.intro .eyebrow { color: var(--yellow); }
+.intro__inner { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 6vw, 72px); align-items: center; }
+.intro h2 { font-size: clamp(2.2rem, 5vw, 3.4rem); }
+.intro__copy p { font-size: 1.15rem; opacity: .9; }
+.intro ul { list-style: none; padding: 0; margin: 20px 0 0; display: grid; gap: 8px; font-weight: 500; }
+.intro__card { background: var(--surface); color: var(--text); border-radius: 24px; padding: clamp(22px, 4vw, 36px); display: grid; gap: 18px; box-shadow: 0 24px 60px rgba(0,0,0,.3); }
+.intro__card label { display: grid; gap: 6px; font-weight: 600; }
+.intro__card label small { font-weight: 400; color: var(--muted); }
+.intro__card input { font: inherit; font-size: 1.05rem; padding: 14px 16px; min-height: 52px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--bg); color: var(--text); }
+.intro__card input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 4px rgba(21,101,216,.2); }
+.intro__card input[aria-invalid='true'] { border-color: var(--accent); }
+.intro__card em { color: var(--accent-dark); font-style: normal; font-size: .88rem; font-weight: 500; }
+.intro__card .btn { width: 100%; }
+.intro__thanks { text-align: center; justify-items: center; }
+.intro__thanks h3 { color: var(--navy); }
+.intro__thanks span { font-size: 3rem; }
+@media (max-width: 820px) { .intro__inner { grid-template-columns: 1fr; } }

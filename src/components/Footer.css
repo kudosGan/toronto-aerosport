@@ -1,0 +1,9 @@
+.footer { background: #07142b; color: #cfdcf5; padding-top: 64px; position: relative; }
+.footer .logo__main { color: #7fb4ff; }
+.footer__grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; padding-bottom: 40px; }
+.footer h3 { color: #fff; font-size: 1.4rem; }
+.footer__links { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 24px; }
+.footer__links a:hover { color: var(--yellow); }
+.footer__bar { border-top: 1px solid rgba(255,255,255,.1); padding: 20px 4%; text-align: center; font-size: .85rem; }
+.footer__top { position: fixed; right: 20px; bottom: 20px; width: 46px; height: 46px; border-radius: 50%; background: var(--red); color: #fff; display: grid; place-items: center; font-size: 1.3rem; box-shadow: 0 8px 20px rgba(0,0,0,.3); z-index: 40; }
+@media (max-width: 700px) { .footer__grid { grid-template-columns: 1fr; } }
