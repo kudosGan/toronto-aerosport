@@ -12,20 +12,43 @@ let demoStore = [
 ];
 
 // Shrink phone photos before upload (keeps pages fast and storage small)
-export async function resizeImage(file, max = 1600, quality = 0.82) {
-  const bmp = await createImageBitmap(file);
-  const scale = Math.min(1, max / Math.max(bmp.width, bmp.height));
-  const canvas = document.createElement('canvas');
-  canvas.width = Math.round(bmp.width * scale);
-  canvas.height = Math.round(bmp.height * scale);
-  canvas.getContext('2d').drawImage(bmp, 0, 0, canvas.width, canvas.height);
-  return new Promise((res) => canvas.toBlob(res, 'image/jpeg', quality));
+// If the browser cannot shrink a photo, the original file is uploaded instead of failing.
+function decode(file) {
+  if (window.createImageBitmap) return createImageBitmap(file).catch(() => decodeWithImg(file));
+  return decodeWithImg(file);
 }
+function decodeWithImg(file) {
+  return new Promise((res, rej) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => { URL.revokeObjectURL(url); res(img); };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('The browser could not read this photo')); };
+    img.src = url;
+  });
+}
+
+export async function resizeImage(file, max = 1600, quality = 0.82) {
+  try {
+    const src = await decode(file);
+    const w = src.width || src.naturalWidth, h = src.height || src.naturalHeight;
+    const scale = Math.min(1, max / Math.max(w, h));
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.round(w * scale);
+    canvas.height = Math.round(h * scale);
+    canvas.getContext('2d').drawImage(src, 0, 0, canvas.width, canvas.height);
+    const blob = await new Promise((res) => canvas.toBlob(res, 'image/jpeg', quality));
+    if (blob) return blob;
+  } catch (e) { console.warn('Photo not resized, uploading original', e); }
+  return file;
+}
+
+const uid = () => (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`);
 
 async function uploadPhoto(file) {
   const blob = await resizeImage(file);
-  const path = `${crypto.randomUUID()}.jpg`;
-  const { error } = await supabase.storage.from(BUCKET).upload(path, blob, { contentType: 'image/jpeg' });
+  const type = blob.type || 'image/jpeg';
+  const path = `${uid()}.${type.split('/')[1]?.replace('jpeg', 'jpg') || 'jpg'}`;
+  const { error } = await supabase.storage.from(BUCKET).upload(path, blob, { contentType: type });
   if (error) throw error;
   return supabase.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
 }

@@ -54,7 +54,7 @@ export function ListingForm({ initial, onSaved, onCancel }) {
     try {
       const fields = { title: f.title.trim(), price: num(f.price), year: num(f.year), hours: num(f.hours), engine: f.engine.trim() || null, location: f.location.trim() || null, description: f.description.trim() || null, status: f.status };
       onSaved(await saveListing(fields, photos, initial?.id));
-    } catch (ex) { setErr('Could not save. Check your internet and try again.'); console.error(ex); setBusy(false); }
+    } catch (ex) { setErr(`Could not save: ${ex?.message || 'unknown problem'}. Check your internet and try again.`); console.error(ex); setBusy(false); }
   };
 
   return (
