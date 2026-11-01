@@ -1,0 +1,24 @@
+.lc { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; color: var(--text); display: flex; flex-direction: column; transition: transform .25s, box-shadow .25s; width: 100%; }
+.lc:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
+.lc__img { position: relative; aspect-ratio: 4 / 3; background: var(--tint); cursor: pointer; }
+.lc__track { display: flex; height: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
+.lc__track::-webkit-scrollbar { display: none; }
+.lc__track img, .lc__track svg { flex: 0 0 100%; width: 100%; height: 100%; object-fit: cover; scroll-snap-align: center; scroll-snap-stop: always; }
+.lc.is-sold .lc__track img { filter: grayscale(.6); opacity: .8; }
+.lc__ribbon { position: absolute; top: 12px; left: 12px; padding: 4px 12px; border-radius: 999px; font-family: var(--font-head); font-weight: 700; font-size: .85rem; color: #fff; pointer-events: none; }
+.lc__ribbon--sold { background: #dc2626; }
+.lc__ribbon--demo { background: var(--navy); left: auto; right: 12px; }
+.lc__count { position: absolute; top: 12px; right: 12px; background: rgba(10, 31, 68, .75); color: #fff; font-size: .8rem; padding: 3px 10px; border-radius: 999px; pointer-events: none; }
+.lc__ribbon--demo ~ .lc__count { top: 46px; }
+.lc__nav { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; border: 0; background: rgba(255, 255, 255, .92); color: var(--navy); font-size: 1.7rem; line-height: 1; padding: 0 0 4px; display: grid; place-items: center; box-shadow: 0 2px 8px rgba(0, 0, 0, .25); opacity: 0; transition: opacity .2s; }
+.lc__nav--prev { left: 10px; }
+.lc__nav--next { right: 10px; }
+.lc:hover .lc__nav, .lc__nav:focus-visible { opacity: 1; }
+@media (hover: none) { .lc__nav { opacity: 1; width: 34px; height: 34px; font-size: 1.4rem; } }
+.lc__dots { position: absolute; bottom: 10px; left: 0; right: 0; display: flex; justify-content: center; gap: 6px; pointer-events: none; }
+.lc__dots i { width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 255, 255, .6); box-shadow: 0 0 3px rgba(0, 0, 0, .4); }
+.lc__dots i.on { background: #fff; transform: scale(1.25); }
+.lc__body { text-align: left; background: none; border: 0; padding: 16px 18px 20px; display: grid; gap: 2px; color: inherit; width: 100%; flex: 1; align-content: start; }
+.lc__price { font-family: var(--font-head); font-size: 1.5rem; color: var(--accent-dark); }
+.lc__title { font-family: var(--font-head); font-weight: 700; font-size: 1.15rem; line-height: 1.2; color: var(--navy); margin: 2px 0 4px; }
+.lc__meta, .lc__loc { color: var(--muted); font-size: .92rem; }

@@ -1,5 +1,8 @@
 .navbar { position: sticky; top: 0; z-index: 60; transition: background .3s, box-shadow .3s; }
-.navbar--solid { background: color-mix(in srgb, var(--surface) 92%, transparent); backdrop-filter: blur(14px); box-shadow: 0 1px 0 var(--border); }
+.navbar--solid { box-shadow: 0 1px 0 var(--border); }
+/* The blur lives on a pseudo-element: backdrop-filter on the header itself would trap the fixed phone menu inside the 72px bar. */
+.navbar::before { content: ''; position: absolute; inset: 0; z-index: -1; background: transparent; transition: background .3s; }
+.navbar--solid::before { background: color-mix(in srgb, var(--surface) 92%, transparent); backdrop-filter: blur(14px); }
 .navbar__inner { display: flex; align-items: center; justify-content: space-between; height: 72px; gap: 16px; }
 .navbar__links { display: flex; gap: 32px; }
 .navbar__links a { font-weight: 500; color: var(--text); position: relative; padding: 6px 0; }

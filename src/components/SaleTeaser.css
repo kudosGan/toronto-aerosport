@@ -1,0 +1,5 @@
+.teaser { background: var(--bg); }
+.teaser__head { display: flex; justify-content: space-between; align-items: end; gap: 16px; flex-wrap: wrap; }
+.teaser__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+@media (max-width: 900px) { .teaser__grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .teaser__grid { grid-template-columns: 1fr; } .teaser__head .btn { width: 100%; } }

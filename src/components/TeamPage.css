@@ -1,0 +1,49 @@
+.tp { padding: clamp(28px, 6vw, 64px) 0 clamp(48px, 8vw, 96px); min-height: 70vh; background: var(--bg); }
+.tp-card { background: var(--surface); border: 1px solid var(--border); border-radius: 22px; padding: clamp(18px, 4vw, 32px); box-shadow: var(--shadow); }
+.tp-login { max-width: 440px; margin: 0 auto; display: grid; gap: 16px; }
+.tp-form { max-width: 720px; margin: 0 auto; display: grid; gap: 16px; }
+.tp label { display: grid; gap: 6px; font-weight: 600; }
+.tp input, .tp select, .tp textarea { font: inherit; font-size: 1.05rem; padding: 12px 14px; min-height: 48px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--bg); color: var(--text); width: 100%; }
+.tp textarea { resize: vertical; }
+.tp input:focus, .tp select:focus, .tp textarea:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 4px rgba(21, 101, 216, .18); }
+.tp-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.tp-err { color: #b91c1c; font-weight: 600; margin: 0; }
+.tp-note { background: #fff4d6; color: #5a4300; border: 1px solid #f0d58a; border-radius: 12px; padding: 10px 14px; margin: 0 0 16px; font-size: .95rem; }
+.tp-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.tp-actions .btn { flex: 1 1 160px; }
+
+.tp-photos__head { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; align-items: baseline; margin-bottom: 8px; }
+.tp-photos__head small { color: var(--muted); }
+.tp-photos__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+.tp-photo { position: relative; aspect-ratio: 1; border-radius: 14px; overflow: hidden; background: var(--tint); }
+.tp-photo img { width: 100%; height: 100%; object-fit: cover; }
+.tp-cover { position: absolute; top: 6px; left: 6px; background: var(--accent); color: #fff; font-size: .72rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+.tp-photo__tools { position: absolute; inset: auto 0 0 0; display: flex; justify-content: space-between; padding: 4px; background: linear-gradient(transparent, rgba(0,0,0,.6)); }
+.tp-photo__tools button { width: 34px; height: 34px; border-radius: 50%; border: 0; background: rgba(255,255,255,.92); color: var(--navy); font-weight: 700; }
+.tp-add { aspect-ratio: 1; border: 2px dashed var(--blue); border-radius: 14px; background: var(--tint); color: var(--blue); font-weight: 600; display: grid; place-content: center; gap: 4px; text-align: center; padding: 8px; }
+.tp-add span { font-size: 1.8rem; }
+
+.tp-head { display: flex; justify-content: space-between; align-items: end; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+.tp-head h1 { font-size: clamp(2rem, 5vw, 3rem); margin: 0; }
+.tp-head__btns { display: flex; gap: 10px; flex-wrap: wrap; }
+.tp-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.tp-item { display: grid; grid-template-columns: 96px 1fr auto; gap: 16px; align-items: center; padding: 12px 16px 12px 12px; }
+.tp-item__img { width: 96px; aspect-ratio: 4 / 3; border-radius: 12px; overflow: hidden; background: var(--tint); }
+.tp-item__img img, .tp-item__img svg { width: 100%; height: 100%; object-fit: cover; }
+.tp-item__info { display: grid; gap: 2px; min-width: 0; }
+.tp-item__info strong { font-family: var(--font-head); font-size: 1.15rem; }
+.tp-item__info span { color: var(--muted); font-size: .92rem; }
+.tp-item__btns { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.tp-item__btns button { min-height: 40px; padding: 8px 14px; border-radius: 999px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font-weight: 600; }
+.tp-item__btns button:hover { border-color: var(--blue); }
+.tp-item__btns .danger { color: #b91c1c; border-color: #f3c0c0; }
+.tp-empty { text-align: center; }
+.tp-empty svg { width: 160px; margin: 0 auto 6px; }
+@media (max-width: 680px) {
+  .tp-row { grid-template-columns: 1fr; }
+  .tp-item { grid-template-columns: 80px 1fr; }
+  .tp-item__img { width: 80px; }
+  .tp-item__btns { grid-column: 1 / -1; justify-content: flex-start; }
+  .tp-head__btns .btn { flex: 1; }
+}
+.tp-photos__grid .tp-add { font-size: .92rem; }

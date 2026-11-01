@@ -27,7 +27,7 @@ export default function Footer() {
           </div>
         </nav>
       </div>
-      <div className="footer__bar">© {new Date().getFullYear()} Toronto Aerosport Inc. All rights reserved.</div>
+      <div className="footer__bar">© {new Date().getFullYear()} Toronto Aerosport Inc. All rights reserved. · <a href="#team" className="footer__team">Team login</a></div>
       {showTop && <a href="#top" className="footer__top" aria-label="Back to top">↑</a>}
     </footer>
   );

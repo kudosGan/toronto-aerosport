@@ -4,6 +4,7 @@
 
 export const navLinks = [
   { label: 'Learn to Fly', href: '#learning-to-fly' },
+  { label: 'For Sale', href: '#aircraft-for-sale' },
   { label: 'Costs', href: '#costs' },
   { label: 'Try a Flight', href: '#intro-flight' },
   { label: 'Visit Us', href: '#where' },

@@ -11,9 +11,12 @@ import Footer from './components/Footer';
 import StickyCta from './components/StickyCta';
 import LearnPage from './components/LearnPage';
 import Cockpit from './components/Cockpit';
+import ForSalePage from './components/ForSalePage';
+import TeamPage from './components/TeamPage';
+import SaleTeaser from './components/SaleTeaser';
 
 // Pages use a plain hash name (no slashes), e.g. #learning-to-fly. Any other hash is a scroll point on the home page.
-const PAGES = { 'learning-to-fly': 'learn' };
+const PAGES = { 'learning-to-fly': 'learn', 'aircraft-for-sale': 'sale', 'team': 'team' };
 const readHash = () => window.location.hash.replace('#', '');
 const routeFor = (hash) => PAGES[hash] || 'home';
 
@@ -51,11 +54,16 @@ export default function App() {
       <main>
         {route === 'learn' ? (
           <LearnPage />
+        ) : route === 'sale' ? (
+          <ForSalePage />
+        ) : route === 'team' ? (
+          <TeamPage />
         ) : (
           <>
             <Hero />
             <Features />
             <Cockpit />
+            <SaleTeaser />
             <Steps />
             <Compare />
             <IntroFlight />
