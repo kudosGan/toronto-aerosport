@@ -13,14 +13,14 @@ export function Login({ onDone }) {
   const [busy, setBusy] = useState(false);
   const submit = async (e) => {
     e.preventDefault(); setBusy(true); setErr('');
-    try { onDone(await signIn(email, password)); } catch { setErr('Username or password is wrong.'); }
+    try { onDone(await signIn(email, password)); } catch { setErr('Email or password is wrong.'); }
     setBusy(false);
   };
   return (
     <form className="tp-card tp-login" onSubmit={submit}>
       <h2>Team sign in</h2>
-      {isDemo && <p className="tp-note">Demo mode: type any username and password to look around. Nothing is saved online.</p>}
-      <label>Username<input value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" autoCapitalize="none" required /></label>
+      {isDemo && <p className="tp-note">Demo mode: type any email and password to look around. Nothing is saved online.</p>}
+      <label>Email<input type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" autoCapitalize="none" required /></label>
       <label>Password<input type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" required={!isDemo} /></label>
       {err && <p className="tp-err">{err}</p>}
       <button className="btn btn-primary" disabled={busy}>{busy ? 'Signing in…' : 'Sign in'}</button>

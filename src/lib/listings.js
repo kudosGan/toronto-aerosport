@@ -74,18 +74,10 @@ export async function getUser() {
   const { data } = await supabase.auth.getSession();
   return data.session?.user ?? null;
 }
-// A short username such as "admin" is turned into an email, and the password gets a suffix,
-// because Supabase needs an email and at least 6 characters. A full email is used as typed.
-const TEAM_DOMAIN = 'team.torontoaerosport.com';
-const TEAM_SUFFIX = '-aero';
-export async function signIn(username, password) {
-  const name = username.trim().toLowerCase();
+export async function signIn(email, password) {
+  const name = email.trim().toLowerCase();
   if (isDemo) return { email: name || 'demo@team' };
-  const short = !name.includes('@');
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email: short ? `${name}@${TEAM_DOMAIN}` : name,
-    password: short ? password + TEAM_SUFFIX : password,
-  });
+  const { data, error } = await supabase.auth.signInWithPassword({ email: name, password });
   if (error) throw error;
   return data.user;
 }
