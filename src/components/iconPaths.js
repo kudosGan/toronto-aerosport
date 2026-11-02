@@ -1,0 +1,30 @@
+// Thin outline icons (24 x 24 grid). Drawn with a round pencil-like line; colour comes from the text colour.
+const P = {
+  clock: '<circle cx="12" cy="12" r="9.5"/><path d="M12 6.5V12l3.5 2"/>',
+  plane: '<path d="M11 3.5c0-1 2-1 2 0v6.2l8 4.8v2l-8-2.2v4.3l2.2 1.7v1.5L12 20.5 8.8 21.8v-1.5l2.2-1.7v-4.3l-8 2.2v-2l8-4.8z"/>',
+  takeoff: '<path d="M3 21.5h18"/><g transform="translate(14.5 9.5) rotate(38) scale(.62) translate(-12 -12)"><path vector-effect="non-scaling-stroke" d="M11 3.5c0-1 2-1 2 0v6.2l8 4.8v2l-8-2.2v4.3l2.2 1.7v1.5L12 20.5 8.8 21.8v-1.5l2.2-1.7v-4.3l-8 2.2v-2l8-4.8z"/></g><path d="M4.5 17.5c2.2-.2 4-1 5.6-2.4" stroke-dasharray="1 3"/>',
+  landing: '<path d="M3 21.5h18"/><g transform="translate(9.5 10.5) rotate(142) scale(.62) translate(-12 -12)"><path vector-effect="non-scaling-stroke" d="M11 3.5c0-1 2-1 2 0v6.2l8 4.8v2l-8-2.2v4.3l2.2 1.7v1.5L12 20.5 8.8 21.8v-1.5l2.2-1.7v-4.3l-8 2.2v-2l8-4.8z"/></g><path d="M13.5 15.2c2.2.8 4.2 1.2 6 1.1" stroke-dasharray="1 3"/>',
+  user: '<circle cx="12" cy="8" r="4"/><path d="M4.5 21c0-4.2 3.4-7 7.5-7s7.5 2.8 7.5 7"/>',
+  users: '<circle cx="9" cy="8" r="3.6"/><path d="M2.5 20.5c0-3.7 2.9-6.2 6.5-6.2s6.5 2.5 6.5 6.2"/><path d="M15.5 4.7a3.6 3.6 0 0 1 0 6.6"/><path d="M18 14.6c2.1.7 3.5 2.6 3.5 5.4"/>',
+  target: '<circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="1.5"/>',
+  compass: '<circle cx="12" cy="12" r="9.5"/><path d="M15.8 8.2l-2 5.6-5.6 2 2-5.6z"/>',
+  moon: '<path d="M20.5 13.6A8.5 8.5 0 1 1 10.4 3.5a6.6 6.6 0 0 0 10.1 10.1z"/>',
+  cloud: '<path d="M7 18.5a4.5 4.5 0 0 1-.6-8.96A6 6 0 0 1 17.9 8.9 4.8 4.8 0 0 1 17.5 18.5z"/>',
+  monitor: '<rect x="2.5" y="4" width="19" height="12.5" rx="2"/><path d="M8 21h8M12 16.5V21"/>',
+  home: '<path d="M3.5 10.5L12 3.5l8.5 7V20a1 1 0 0 1-1 1h-4.5v-6h-6v6H4.5a1 1 0 0 1-1-1z"/>',
+  book: '<path d="M4.5 5.5A2 2 0 0 1 6.5 3.5H19.5v16H6.5a2 2 0 0 0-2 2z"/><path d="M4.5 5.5v16M8.5 8h7"/>',
+  cap: '<path d="M2 9.5l10-5 10 5-10 5z"/><path d="M6 12v4.5c1.6 1.8 3.7 2.5 6 2.5s4.4-.7 6-2.5V12"/><path d="M22 9.5V15"/>',
+  lock: '<rect x="4.5" y="10.5" width="15" height="10.5" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/>',
+  back: '<path d="M19.5 12h-15M11 5.5L4.5 12l6.5 6.5"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/>',
+  pin: '<path d="M12 21.5s7-5.7 7-11.5a7 7 0 0 0-14 0c0 5.8 7 11.5 7 11.5z"/><circle cx="12" cy="10" r="2.5"/>',
+  cog: '<circle cx="12" cy="12" r="3.3"/><circle cx="12" cy="12" r="6.8"/><path d="M12 2.5v3.2M12 18.3v3.2M2.5 12h3.2M18.3 12h3.2M5.3 5.3l2.3 2.3M16.4 16.4l2.3 2.3M5.3 18.7l2.3-2.3M16.4 7.6l2.3-2.3"/>',
+  doc: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',
+  map: '<path d="M2.5 6.5v14l6-3 7 3 6-3v-14l-6 3-7-3z"/><path d="M8.5 3.5v14M15.5 6.5v14"/>',
+  radio: '<circle cx="12" cy="12" r="2"/><path d="M7.8 7.8a6 6 0 0 0 0 8.4M16.2 7.8a6 6 0 0 1 0 8.4M4.9 4.9a10 10 0 0 0 0 14.2M19.1 4.9a10 10 0 0 1 0 14.2"/>',
+  shield: '<path d="M12 21.5s8-3.8 8-10v-6l-8-2.5-8 2.5v6c0 6.2 8 10 8 10z"/>',
+  brain: '<path d="M12 5v15M8.5 5.2A3.2 3.2 0 0 0 5.3 8.4c-1.8.5-2.3 3-1 4.2-1.3 1.3-.6 3.7 1.2 4.2.2 1.6 2 2.6 3.6 2.1.8.5 1.6.5 2.9.2M15.5 5.2a3.2 3.2 0 0 1 3.2 3.2c1.8.5 2.3 3 1 4.2 1.3 1.3.6 3.7-1.2 4.2-.2 1.6-2 2.6-3.6 2.1-.8.5-1.6.5-2.9.2"/>',
+  check: '<path d="M4.5 12.5l5 5 10-11"/>',
+};
+
+export default P;

@@ -13,7 +13,7 @@ export function Login({ onDone }) {
   const [busy, setBusy] = useState(false);
   const submit = async (e) => {
     e.preventDefault(); setBusy(true); setErr('');
-    try { onDone(await signIn(email, password)); } catch { setErr('Email or password is wrong.'); }
+    try { onDone(await signIn(email, password)); } catch (ex) { setErr(ex.message === 'NOT_TEAM' ? 'This account is not a team account.' : 'Email or password is wrong.'); }
     setBusy(false);
   };
   return (

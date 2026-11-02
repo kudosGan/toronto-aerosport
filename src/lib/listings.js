@@ -92,16 +92,24 @@ export async function deleteListing(listing) {
 }
 
 // ---- Team sign-in ----
+// Students sign in to the same database, so "signed in" is not enough: the account must be on the team.
+async function isStaff(user) {
+  const { data, error } = await supabase.from('staff').select('user_id').eq('user_id', user.id).maybeSingle();
+  if (error) return true; // team table not created yet: the database rules still protect the data
+  return Boolean(data);
+}
 export async function getUser() {
   if (isDemo) return null;
   const { data } = await supabase.auth.getSession();
-  return data.session?.user ?? null;
+  const user = data.session?.user ?? null;
+  return user && (await isStaff(user)) ? user : null;
 }
 export async function signIn(email, password) {
   const name = email.trim().toLowerCase();
   if (isDemo) return { email: name || 'demo@team' };
   const { data, error } = await supabase.auth.signInWithPassword({ email: name, password });
   if (error) throw error;
+  if (!(await isStaff(data.user))) { await supabase.auth.signOut(); throw new Error('NOT_TEAM'); }
   return data.user;
 }
 export async function signOut() { if (!isDemo) await supabase.auth.signOut(); }

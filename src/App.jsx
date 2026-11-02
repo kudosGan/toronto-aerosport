@@ -14,9 +14,10 @@ import Cockpit from './components/Cockpit';
 import ForSalePage from './components/ForSalePage';
 import TeamPage from './components/TeamPage';
 import SaleTeaser from './components/SaleTeaser';
+import StudentCorner from './components/StudentCorner';
 
 // Pages use a plain hash name (no slashes), e.g. #learning-to-fly. Any other hash is a scroll point on the home page.
-const PAGES = { 'learning-to-fly': 'learn', 'aircraft-for-sale': 'sale', 'team': 'team' };
+const PAGES = { 'learning-to-fly': 'learn', 'aircraft-for-sale': 'sale', 'team': 'team', 'student-corner': 'student' };
 const readHash = () => window.location.hash.replace('#', '');
 const routeFor = (hash) => PAGES[hash] || 'home';
 
@@ -48,6 +49,9 @@ export default function App() {
     return () => clearTimeout(t);
   }, [route, hash]);
 
+  // The Student Corner is its own portal: no website menu, footer or booking bar around it
+  if (route === 'student') return <StudentCorner theme={theme} onToggleTheme={() => setTheme(theme === 'day' ? 'night' : 'day')} />;
+
   return (
     <>
       <Navbar theme={theme} onToggleTheme={() => setTheme(theme === 'day' ? 'night' : 'day')} />
@@ -58,6 +62,7 @@ export default function App() {
           <ForSalePage />
         ) : route === 'team' ? (
           <TeamPage />
+
         ) : (
           <>
             <Hero />

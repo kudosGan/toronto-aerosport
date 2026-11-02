@@ -9,6 +9,7 @@ export const navLinks = [
   { label: 'Try a Flight', href: '#intro-flight' },
   { label: 'Visit Us', href: '#where' },
   { label: 'FAQ', href: '#faq' },
+  { label: 'Student Corner', href: '#student-corner' },
 ];
 
 export const heroFacts = [
