@@ -66,12 +66,82 @@ export async function fetchFlights(userId) {
   return data;
 }
 
+/** waiting = sent by the student, not yet checked. approved = signed by an instructor. returned = sent back with a note. */
+export const statusOf = (f) => (f.signed_off ? 'approved' : f.returned_note ? 'returned' : 'waiting');
+
+/** Only approved flights count towards totals and progress. */
+export const approvedOnly = (flights) => (flights || []).filter((f) => f.signed_off);
+
+/** Every flight waiting for a sign-off, with the student's name. For the team. */
+export async function fetchPending() {
+  const { data, error } = await supabase.from('flights').select('*, students(user_id, student_id, full_name, whatsapp)')
+    .eq('signed_off', false).is('returned_note', null).order('created_at', { ascending: true });
+  if (error) throw error;
+  return data;
+}
+
+export async function returnFlight(id, note) {
+  const { error } = await supabase.from('flights').update({ returned_note: note }).eq('id', id);
+  if (error) throw error;
+}
+
+export async function saveMyWhatsapp(number) {
+  const { error } = await supabase.rpc('set_my_whatsapp', { p_number: number });
+  if (error) throw error;
+}
+
+/** A WhatsApp link with the message already typed. Ten digits are taken as a Canada or US number. */
+export function waLink(number, text) {
+  let n = String(number || '').replace(/\D/g, '');
+  if (n.length === 10) n = `1${n}`;
+  return `https://wa.me/${n}?text=${encodeURIComponent(text)}`;
+}
+export const portalUrl = () => `${window.location.origin}${window.location.pathname}#student-corner`;
+
+// ---- Payments (Interac e-Transfer) ----
+export async function fetchPayments(userId) {
+  const { data, error } = await supabase.from('payments').select('*').eq('student_user_id', userId).order('created_at', { ascending: false });
+  if (error) throw error;
+  return data;
+}
+export async function fetchPendingPayments() {
+  const { data, error } = await supabase.from('payments').select('*, students(user_id, student_id, full_name, whatsapp)')
+    .eq('status', 'pending').order('created_at', { ascending: true });
+  if (error) throw error;
+  return data;
+}
+export async function reportPayment(userId, fields) {
+  const { error } = await supabase.from('payments').insert({ ...fields, student_user_id: userId, method: 'etransfer' });
+  if (error) throw error;
+}
+export async function confirmPayment(id, by) {
+  const { error } = await supabase.from('payments').update({ status: 'confirmed', confirmed_by: by, confirmed_at: new Date().toISOString(), team_note: null }).eq('id', id);
+  if (error) throw error;
+}
+export async function declinePayment(id, note) {
+  const { error } = await supabase.from('payments').update({ status: 'declined', team_note: note }).eq('id', id);
+  if (error) throw error;
+}
+export async function deletePayment(id) {
+  const { error } = await supabase.from('payments').delete().eq('id', id);
+  if (error) throw error;
+}
+
 /** Add (no id) or change (id) a logbook entry. Fields are the flights table columns. */
 export async function saveFlight(studentUserId, fields, id) {
-  const q = id
-    ? supabase.from('flights').update(fields).eq('id', id)
-    : supabase.from('flights').insert({ ...fields, student_user_id: studentUserId });
-  const { error } = await q;
+  if (id) {
+    const { error } = await supabase.from('flights').update(fields).eq('id', id);
+    if (error) throw error;
+    return null;
+  }
+  const { data, error } = await supabase.from('flights').insert({ ...fields, student_user_id: studentUserId }).select().single();
+  if (error) throw error;
+  return data;
+}
+
+/** The instructor signs the flight and confirms its payment together. */
+export async function approveFlight(id, by) {
+  const { error } = await supabase.rpc('approve_flight', { p_flight: id, p_by: by });
   if (error) throw error;
 }
 
@@ -83,7 +153,7 @@ export async function deleteFlight(id) {
 /** An instructor signs an entry (signedBy = their name) or takes the signature off (signedBy = null). */
 export async function setSignOff(id, signedBy) {
   const patch = signedBy
-    ? { signed_off: true, signed_by: signedBy, signed_at: new Date().toISOString() }
+    ? { signed_off: true, signed_by: signedBy, signed_at: new Date().toISOString(), returned_note: null }
     : { signed_off: false, signed_by: null, signed_at: null };
   const { error } = await supabase.from('flights').update(patch).eq('id', id);
   if (error) throw error;

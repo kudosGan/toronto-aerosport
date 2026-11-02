@@ -2,13 +2,16 @@ import { useEffect, useState } from 'react';
 import { isDemo } from '../lib/listings';
 import {
   signInStudent, signOutStudent, getRole, fetchStudents, createStudent, updateStudent,
-  summarize, isOpen, today, MINIMUMS, MILESTONES,
+  summarize, isOpen, today, MINIMUMS, MILESTONES, approvedOnly, statusOf, fetchPending, fetchPendingPayments,
 } from '../lib/students';
 import { groundTopics } from '../data/learnData';
 import { contact } from '../data/siteData';
 import Logo from './Logo';
 import Icon from './Icon';
-import Logbook, { StatTiles, useFlights, dateText } from './Logbook';
+import Logbook, { StatTiles, WhatsappCard, useFlights } from './Logbook';
+import Payments, { usePayments } from './Payments';
+import { money } from '../lib/billing';
+import { dateText } from '../lib/format';
 import './TeamPage.css';
 import './StudentCorner.css';
 
@@ -66,12 +69,29 @@ function GroundSchool() {
   );
 }
 
-function Overview({ flights, goLogbook }) {
-  const t = summarize(flights || []);
+const STATUS_TEXT = { waiting: 'Waiting for sign-off', approved: 'Approved', returned: 'Sent back' };
+
+function Overview({ flights, goLogbook, student, onProfileChange }) {
+  const approved = approvedOnly(flights);
+  const t = summarize(approved);
+  const waiting = (flights || []).filter((f) => statusOf(f) === 'waiting');
+  const returned = (flights || []).filter((f) => statusOf(f) === 'returned');
   const recent = (flights || []).slice(0, 3);
   return (
     <>
-      <StatTiles flights={flights} />
+      {(waiting.length > 0 || returned.length > 0) && (
+        <button className="sc-alert" onClick={goLogbook}>
+          <Icon name="clock" size={22} />
+          <span>
+            {waiting.length > 0 && <>{waiting.length} flight{waiting.length > 1 ? 's' : ''} ({Math.round(waiting.reduce((a, f) => a + Number(f.total_hours), 0) * 10) / 10} h) waiting for an instructor to sign off. </>}
+            {returned.length > 0 && <b>{returned.length} sent back for you to fix.</b>}
+          </span>
+          <em>Open logbook →</em>
+        </button>
+      )}
+      <StatTiles flights={approved} />
+      <p className="sc-hint sc-hint--tight">Only flights signed by an instructor are counted here.</p>
+      {student && <WhatsappCard student={student} onSaved={onProfileChange} />}
       <section className="tp-card sc-block">
         <h2>Your progress to the Ultralight Permit</h2>
         <Bar label="Total flying time (hours)" value={t.total} min={MINIMUMS.total} />
@@ -90,7 +110,7 @@ function Overview({ flights, goLogbook }) {
             {recent.map((f) => (
               <li key={f.id}>
                 <div><strong>{dateText(f.flown_on)}</strong><span>{[f.aircraft, f.registration, [f.from_airport, f.to_airport].filter(Boolean).join(' → ')].filter(Boolean).join(' · ')}</span></div>
-                <div className="sc-log__hrs">{f.total_hours} h{f.signed_off && <em>Signed</em>}</div>
+                <div className="sc-log__hrs">{f.total_hours} h<em className={`is-${statusOf(f)}`}>{STATUS_TEXT[statusOf(f)]}</em></div>
               </li>
             ))}
           </ul>
@@ -100,7 +120,7 @@ function Overview({ flights, goLogbook }) {
   );
 }
 
-const TABS = [['overview', 'home', 'Overview'], ['logbook', 'book', 'Logbook'], ['school', 'cap', 'Ground school']];
+const TABS = [['overview', 'home', 'Overview'], ['logbook', 'book', 'Logbook'], ['school', 'cap', 'Ground school'], ['pay', 'wallet', 'Payments']];
 
 function Tabs({ tab, setTab, skip = [] }) {
   return (
@@ -112,10 +132,11 @@ function Tabs({ tab, setTab, skip = [] }) {
   );
 }
 
-function StudentView({ student, viewer, onSignOut }) {
+function StudentView({ student, viewer, onSignOut, onProfileChange }) {
   const open = isOpen(student);
   const [tab, setTab] = useState('overview');
   const [flights, reload, error] = useFlights(student.user_id);
+  const [pays, reloadPays, payError] = usePayments(student.user_id);
 
   return (
     <>
@@ -140,9 +161,10 @@ function StudentView({ student, viewer, onSignOut }) {
         <>
           <Tabs tab={tab} setTab={setTab} />
           {error && <p className="tp-err">{error}</p>}
-          {tab === 'overview' && <Overview flights={flights} goLogbook={() => setTab('logbook')} />}
-          {tab === 'logbook' && <Logbook studentUserId={student.user_id} flights={flights} reload={reload} viewer={viewer} />}
+          {tab === 'overview' && <Overview flights={flights} goLogbook={() => setTab('logbook')} student={student} onProfileChange={onProfileChange} />}
+          {tab === 'logbook' && <Logbook student={student} flights={flights} reload={reload} viewer={viewer} onProfileChange={onProfileChange} payments={pays} reloadPayments={reloadPays} />}
           {tab === 'school' && <GroundSchool />}
+          {tab === 'pay' && <Payments student={student} viewer={viewer} rows={pays} reload={reloadPays} error={payError} flights={flights} />}
         </>
       )}
     </>
@@ -150,9 +172,10 @@ function StudentView({ student, viewer, onSignOut }) {
 }
 
 /** The team looks at one student: totals and the logbook, with sign-off. */
-function StaffStudent({ student, viewer, onBack }) {
-  const [tab, setTab] = useState('logbook');
+function StaffStudent({ student, viewer, onBack, startTab }) {
+  const [tab, setTab] = useState(startTab);
   const [flights, reload, error] = useFlights(student.user_id);
+  const [pays, reloadPays, payError] = usePayments(student.user_id);
   return (
     <>
       <button className="sc-link sc-back" onClick={onBack}><Icon name="back" size={18} />All students</button>
@@ -169,7 +192,8 @@ function StaffStudent({ student, viewer, onBack }) {
       <Tabs tab={tab} setTab={setTab} skip={['school']} />
       {error && <p className="tp-err">{error}</p>}
       {tab === 'overview' && <Overview flights={flights} goLogbook={() => setTab('logbook')} />}
-      {tab === 'logbook' && <Logbook studentUserId={student.user_id} flights={flights} reload={reload} viewer={viewer} />}
+      {tab === 'logbook' && <Logbook student={student} flights={flights} reload={reload} viewer={viewer} payments={pays} reloadPayments={reloadPays} />}
+      {tab === 'pay' && <Payments student={student} viewer={viewer} rows={pays} reload={reloadPays} error={payError} flights={flights} />}
     </>
   );
 }
@@ -177,6 +201,7 @@ function StaffStudent({ student, viewer, onBack }) {
 function StaffView({ viewer, onSignOut }) {
   const [students, setStudents] = useState(null);
   const [selected, setSelected] = useState(null);
+  const [startTab, setStartTab] = useState('logbook');
   const [form, setForm] = useState(() => {
     const d = new Date(); d.setFullYear(d.getFullYear() + 1);
     return { name: '', ends: d.toLocaleDateString('en-CA') };
@@ -185,8 +210,14 @@ function StaffView({ viewer, onSignOut }) {
   const [msg, setMsg] = useState('');
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
+  const [pending, setPending] = useState(null);
+  const [payQueue, setPayQueue] = useState(null);
 
-  const load = () => fetchStudents().then(setStudents).catch((e) => setErr(e.message));
+  const load = () => {
+    fetchStudents().then(setStudents).catch((e) => setErr(e.message));
+    fetchPending().then(setPending).catch(() => setPending([]));
+    fetchPendingPayments().then(setPayQueue).catch(() => setPayQueue([]));
+  };
   useEffect(() => { load(); }, []);
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
@@ -206,7 +237,7 @@ function StaffView({ viewer, onSignOut }) {
     try { await updateStudent(userId, patch); setMsg(okText); load(); } catch (ex) { setErr(ex.message); }
   };
 
-  if (selected) return <StaffStudent student={selected} viewer={viewer} onBack={() => setSelected(null)} />;
+  if (selected) return <StaffStudent student={selected} viewer={viewer} startTab={startTab} onBack={() => { setSelected(null); load(); }} />;
 
   return (
     <>
@@ -219,6 +250,34 @@ function StaffView({ viewer, onSignOut }) {
       </header>
       {msg && <p className="sc-ok" role="status">{msg}</p>}
       {err && <p className="tp-err">{err}</p>}
+
+      <section className="tp-card sc-block sc-queue">
+        <h2><Icon name="clock" size={22} />Waiting for your sign-off{pending && pending.length > 0 ? ` (${pending.length})` : ''}</h2>
+        {!pending ? <p className="sc-hint">Loading…</p> : pending.length === 0 ? <p className="sc-hint">Nothing is waiting. New flights from students appear here.</p> : (
+          <ul className="sc-log">
+            {pending.map((f) => (
+              <li key={f.id}>
+                <div><strong>{f.students?.full_name} · {dateText(f.flown_on)}</strong><span>{[f.aircraft, f.registration, `${f.total_hours} h`].filter(Boolean).join(' · ')}</span></div>
+                <button className="sc-link" onClick={() => { setStartTab('logbook'); setSelected((students || []).find((s) => s.user_id === f.student_user_id) || null); }}>Review →</button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="tp-card sc-block sc-queue">
+        <h2><Icon name="wallet" size={22} />Payments to confirm{payQueue && payQueue.length > 0 ? ` (${payQueue.length})` : ''}</h2>
+        {!payQueue ? <p className="sc-hint">Loading…</p> : payQueue.length === 0 ? <p className="sc-hint">No e-Transfers are waiting to be confirmed.</p> : (
+          <ul className="sc-log">
+            {payQueue.map((p) => (
+              <li key={p.id}>
+                <div><strong>{p.students?.full_name} · {money(p.amount)}</strong><span>Sent {dateText(p.sent_on)}{p.reference ? ` · Confirmation ${p.reference}` : ''}</span></div>
+                <button className="sc-link" onClick={() => { setStartTab('pay'); setSelected((students || []).find((s) => s.user_id === p.student_user_id) || null); }}>Check →</button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
 
       <form className="tp-card tp-form sc-add" onSubmit={add}>
         <h2>Add a student</h2>
@@ -246,7 +305,7 @@ function StaffView({ viewer, onSignOut }) {
                   <em className={open ? 'on' : 'off'}>{open ? 'Active' : s.active ? 'Expired' : 'Access ended'}</em>
                 </div>
                 <div className="sc-student__tools">
-                  <button className="primary" onClick={() => setSelected(s)}><Icon name="book" size={18} />Logbook</button>
+                  <button className="primary" onClick={() => { setStartTab('logbook'); setSelected(s); }}><Icon name="book" size={18} />Logbook</button>
                   <input type="date" value={value} onChange={(e) => setEnds({ ...ends, [s.user_id]: e.target.value })} aria-label={`Access end date for ${s.full_name}`} />
                   <button disabled={value === s.access_ends} onClick={change(s.user_id, { access_ends: value }, `New end date saved for ${s.full_name}.`)}>Save date</button>
                   {s.active
@@ -284,7 +343,7 @@ export default function StudentCorner({ theme, onToggleTheme }) {
   else if (state.error) body = <p className="tp-err">Something went wrong: {state.error}</p>;
   else if (!state.role) body = <Login onDone={load} />;
   else if (state.role === 'staff') body = <StaffView viewer={viewer} onSignOut={signOut} />;
-  else if (state.role === 'student') body = <StudentView student={state.student} viewer={viewer} onSignOut={signOut} />;
+  else if (state.role === 'student') body = <StudentView student={state.student} viewer={viewer} onSignOut={signOut} onProfileChange={load} />;
   else body = (
     <div className="tp-card sc-ended">
       <h2>This account is not set up yet</h2>

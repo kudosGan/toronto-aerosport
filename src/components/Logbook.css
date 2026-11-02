@@ -17,7 +17,6 @@
 .lb-card__top span { color: var(--muted); font-size: .93rem; }
 .lb-card__total { font-family: var(--font-head); white-space: nowrap; color: var(--muted); }
 .lb-card__total b { font-size: 1.9rem; color: var(--accent); }
-.lb-card__total em { font-style: normal; font-size: .75rem; margin-left: 8px; background: #e3f6e8; color: #14532d; border-radius: 999px; padding: 2px 8px; font-family: var(--font-body); font-weight: 700; vertical-align: middle; }
 .lb-card__route { margin: 0; font-weight: 600; }
 .lb-chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
 .lb-chips li { background: var(--tint); border-radius: 999px; padding: 4px 12px; font-size: .9rem; color: var(--muted); }
@@ -46,3 +45,44 @@
 .lb-card__meta span { display: inline-flex; align-items: center; gap: 6px; }
 .lb-card__meta svg { color: var(--blue); }
 .lb-card__signed { display: flex; align-items: center; gap: 6px; }
+
+/* sign-off status */
+.lb-badge { margin: 0; display: inline-flex; align-items: center; gap: 6px; width: fit-content; border-radius: 999px; padding: 3px 12px 3px 10px; font-size: .85rem; font-weight: 700; }
+.lb-badge--wait { background: #fff4d6; color: #7a5600; }
+.lb-badge--ok { background: #e3f6e8; color: #14532d; }
+.lb-badge--back { background: #fde4e4; color: #991b1b; }
+.lb-card--waiting { border-left: 5px solid #f0b429; }
+.lb-card--approved { border-left: 5px solid #16a34a; }
+.lb-card--returned { border-left: 5px solid #dc2626; }
+.lb-card__returned { margin: 0; background: #fde4e4; color: #7f1d1d; border-radius: 10px; padding: 10px 14px; }
+.lb-back { margin: 0; display: flex; gap: 8px; align-items: center; background: #fde4e4; color: #7f1d1d; border-radius: 10px; padding: 10px 14px; font-weight: 600; }
+
+.lb-notice { display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: start; border-left: 5px solid var(--blue); margin-bottom: 14px; }
+.lb-notice > svg { color: #16a34a; margin-top: 2px; }
+.lb-notice strong { font-family: var(--font-head); font-size: 1.15rem; color: var(--navy); }
+.lb-notice p { margin: 4px 0 0; color: var(--muted); }
+.lb-notice__btns { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+.lb-notice__btns .btn { min-height: 44px; padding: 10px 20px; font-size: .98rem; }
+.lb-notice__x { border: 0; background: none; font-size: 1.6rem; line-height: 1; color: var(--muted); width: 40px; height: 40px; }
+
+.lb-wa { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: start; margin-bottom: 14px; }
+.lb-wa > svg { color: var(--blue); margin-top: 4px; }
+.lb-wa h3 { margin: 0 0 2px; font-size: 1.15rem; }
+.lb-wa p { margin: 0 0 10px; color: var(--muted); font-size: .95rem; }
+.lb-wa__row { display: flex; gap: 10px; flex-wrap: wrap; }
+.lb-wa__row input { flex: 1 1 200px; width: auto; }
+.lb-wa__row .btn { min-height: 48px; padding: 10px 24px; }
+.lb-wa .lb-wa__ok { color: #15803d; font-weight: 600; margin: 8px 0 0; }
+
+/* what this flight costs */
+.lb-bill { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; background: var(--bg); border: 1.5px dashed var(--border); border-radius: 14px; padding: 12px 16px; }
+.lb-bill > svg { color: var(--blue); }
+.lb-bill__main { display: grid; flex: 1 1 200px; min-width: 0; }
+.lb-bill__main strong { font-family: var(--font-head); font-size: 1.5rem; color: var(--navy); line-height: 1.1; }
+.lb-bill__main small, .lb-bill__state small { color: var(--muted); }
+.lb-bill__state { display: grid; gap: 2px; justify-items: end; text-align: right; }
+.lb-bill--paid { border-style: solid; border-color: color-mix(in srgb, #16a34a 55%, var(--border)); background: color-mix(in srgb, #16a34a 10%, var(--surface)); }
+.lb-bill--part, .lb-bill--sent { border-color: color-mix(in srgb, #f0b429 70%, var(--border)); background: color-mix(in srgb, #f0b429 8%, var(--surface)); }
+.lb-bill--unpaid { border-color: color-mix(in srgb, #dc2626 45%, var(--border)); background: color-mix(in srgb, #dc2626 6%, var(--surface)); }
+.lb-bill__note { flex-basis: 100%; margin: 0; padding-top: 8px; border-top: 1px dashed var(--border); color: var(--text); font-size: .93rem; }
+@media (max-width: 560px) { .lb-bill__state { justify-items: start; text-align: left; } }

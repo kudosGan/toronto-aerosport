@@ -52,6 +52,17 @@ export const contact = {
   officeAddress: '31 Cobbler Crescent, Markham, ON L3P 6P4',   // CHECK: office or mailing address?
 };
 
+// Who is told when a student sends flying time for sign-off. WhatsApp number: digits only, with the country code.
+// CHECK: this uses the airport phone for now. Put the instructor's own WhatsApp number here.
+export const signoff = { whatsapp: contact.phoneLink.replace(/\D/g, ''), email: contact.email };
+
+// Where students send their Interac e-Transfer. Students see this address on the Payments tab.
+export const payments = { etransferEmail: 'torontoaerosport@yahoo.ca' };
+
+// What a trip costs (CAD). One price per logbook entry, however long the flight is.
+// A trip with any dual time is a dual trip. A trip with only solo time is a solo trip.
+export const rates = { dualTrip: 240, soloTrip: 100 };
+
 // Pages from the old site that can be added next:
 // About Us, What Are Ultralights, What You Fly, Introductory Flight, Aircraft Ownership,
 // Maintenance/Building, Aircraft For Sale, Links Of Interest
