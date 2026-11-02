@@ -1,5 +1,5 @@
 // Edit this file to change the words on the site.
-// Facts taken from torontoaerosport.com: Stouffville, Ontario; ultralight & light sport aircraft; permit in 25 hours or less.
+// Facts taken from torontoaerosport.com: Stouffville, Ontario; ultralight & light sport aircraft; at least 10 hours of flying, and more depending on the student's and instructor's confidence.
 // PLACEHOLDER = replace with your real details.
 
 export const navLinks = [
@@ -13,8 +13,8 @@ export const navLinks = [
 ];
 
 export const heroFacts = [
-  { big: '25', small: 'hours or less to get your permit' },
-  { big: '10', small: 'hours is the minimum flying time' },
+  { big: '10+', small: 'hours of flying. 10 is the minimum. More if you or your instructor feel you need it' },
+  { big: '2+', small: 'hours of flying on your own (solo)' },
   { big: '100%', small: 'of the theory can be studied online' },
 ];
 
@@ -33,7 +33,7 @@ export const steps = [
 ];
 
 export const faqs = [
-  { q: 'How long does it take to get a permit?', a: 'Talk to us about getting your Ultralight Pilot Permit in 25 hours or less. The Transport Canada minimum is 10 hours of flying.' },
+  { q: 'How long does it take to get a permit?', a: 'The Transport Canada minimum for the Ultralight Pilot Permit is 10 hours of flying. Most students need more. It depends on how confident you feel, and how confident your instructor is in your flying. We tell you honestly how you are doing, so you only fly the hours you need.' },
   { q: 'Is flying really less expensive now?', a: 'Yes. New sport aircraft and new permit types make flying cheaper and open to more people.' },
   { q: 'Can I study at home?', a: 'Yes. Our ultralight ground school is online, so you can study the theory when it suits you.' },
   { q: 'Where are you?', a: 'In Stouffville, Ontario, north-east of Toronto in the GTA.' },
@@ -46,7 +46,7 @@ export const contact = {
   phone: '647-218-5403',
   phoneLink: '+16472185403',
   phoneLabel: 'Airport',
-  email: 'bill@torontoairsport.com',   // CHECK: spelled "airsport" on the old site, not "aerosport"
+  email: 'torontoaerosport@yahoo.ca',
   people: ['Bill Bryan', 'Manny Morales', 'Harpreet Walia'],
   flyingAt: 'Stouffville, Ontario',
   officeAddress: '31 Cobbler Crescent, Markham, ON L3P 6P4',   // CHECK: office or mailing address?

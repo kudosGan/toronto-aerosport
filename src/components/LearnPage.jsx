@@ -108,6 +108,7 @@ export default function LearnPage() {
                 <li key={r.text}><strong>{r.big}</strong><span>{r.text}</span></li>
               ))}
             </ul>
+            <p className="lp-note">These are the least you need. Most students fly more than 10 hours. How many depends on your confidence and your instructor's confidence in your flying. You are ready when you both agree.</p>
             <p>Ground school and your flying time prepare you to pass. When you do, you are an Ultralight (UL) pilot.</p>
           </div>
         </div>

@@ -22,7 +22,7 @@ function useCountUp(target, run, ms = 1300) {
 
 export default function Steps() {
   const [ref, visible] = useReveal(0.2);
-  const hours = useCountUp(25, visible);
+  const hours = useCountUp(10, visible);
 
   return (
     <section className="section steps" id="learn">
@@ -30,7 +30,7 @@ export default function Steps() {
         <div className="section-head">
           <span className="eyebrow">Learn to fly</span>
           <h2>Four easy steps to your pilot permit</h2>
-          <p>Talk to us about getting your Ultralight Pilot Permit in 25 hours or less.{' '}
+          <p>You need at least 10 hours of flying. How long it takes depends on your confidence and your instructor's.{' '}
             <a className="steps__more" href="#learning-to-fly">Read the full guide →</a></p>
         </div>
 
@@ -48,9 +48,9 @@ export default function Steps() {
           </ol>
 
           <div className="steps__counter">
-            <small>Your permit in</small>
+            <small>You need at least</small>
             <strong>{hours}</strong>
-            <span>hours or less</span>
+            <span>hours of flying</span>
             <a href="#intro-flight" className="btn btn-primary">Start with a flight</a>
           </div>
         </div>

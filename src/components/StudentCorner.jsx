@@ -10,6 +10,7 @@ import Logo from './Logo';
 import Icon from './Icon';
 import Logbook, { StatTiles, WhatsappCard, useFlights } from './Logbook';
 import Payments, { usePayments } from './Payments';
+import Enquiries from './Enquiries';
 import { money } from '../lib/billing';
 import { dateText } from '../lib/format';
 import './TeamPage.css';
@@ -250,6 +251,8 @@ function StaffView({ viewer, onSignOut }) {
       </header>
       {msg && <p className="sc-ok" role="status">{msg}</p>}
       {err && <p className="tp-err">{err}</p>}
+
+      <Enquiries />
 
       <section className="tp-card sc-block sc-queue">
         <h2><Icon name="clock" size={22} />Waiting for your sign-off{pending && pending.length > 0 ? ` (${pending.length})` : ''}</h2>

@@ -1,24 +1,29 @@
 import { useState } from 'react';
+import { submitEnquiry } from '../lib/enquiries';
 import './IntroFlight.css';
 
-const empty = { name: '', email: '', phone: '' };
+const empty = { name: '', email: '', phone: '', heard_from: '', message: '', website: '' };
+const HEARD = ['Instagram', 'Facebook', 'Google search', 'A friend or family', 'Saw an aircraft or flyer', 'Other'];
 
 export default function IntroFlight() {
   const [form, setForm] = useState(empty);
   const [errors, setErrors] = useState({});
   const [sent, setSent] = useState(false);
+  const [busy, setBusy] = useState(false);
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
     const err = {};
     if (!form.name.trim()) err.name = 'Please add your name.';
     if (!/^\S+@\S+\.\S+$/.test(form.email)) err.email = 'Please add a valid email.';
     setErrors(err);
     if (Object.keys(err).length) return;
-    // TODO: connect to your email or backend service (for example Formspree or EmailJS)
-    console.log('Lead', form);
-    setSent(true);
+    if (form.website) { setSent(true); return; } // hidden field: only automatic form-fillers complete it
+    setBusy(true);
+    try { await submitEnquiry(form); setSent(true); }
+    catch { setErrors({ send: 'Sorry, we could not send your request. Please try again, or call us.' }); }
+    setBusy(false);
   };
 
   return (
@@ -51,10 +56,23 @@ export default function IntroFlight() {
               <input type="email" value={form.email} onChange={set('email')} autoComplete="email" aria-invalid={!!errors.email} />
               {errors.email && <em>{errors.email}</em>}
             </label>
-            <label>Phone <small>(optional)</small>
+            <label>Phone or WhatsApp <small>(optional, but it helps us reach you fast)</small>
               <input type="tel" value={form.phone} onChange={set('phone')} autoComplete="tel" />
             </label>
-            <button className="btn btn-primary" type="submit">Request my flight</button>
+            <label>How did you hear about us? <small>(optional)</small>
+              <select value={form.heard_from} onChange={set('heard_from')}>
+                <option value="">Choose one</option>
+                {HEARD.map((h) => <option key={h}>{h}</option>)}
+              </select>
+            </label>
+            <label>Anything you would like us to know? <small>(optional)</small>
+              <textarea rows="3" value={form.message} onChange={set('message')} maxLength={1000} placeholder="For example the best days, or a friend joining you" />
+            </label>
+            <label className="intro__hp" aria-hidden="true">Website
+              <input tabIndex={-1} autoComplete="off" value={form.website} onChange={set('website')} />
+            </label>
+            {errors.send && <em role="alert">{errors.send}</em>}
+            <button className="btn btn-primary" type="submit" disabled={busy}>{busy ? 'Sending…' : 'Request my flight'}</button>
           </form>
         )}
       </div>
