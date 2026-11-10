@@ -345,7 +345,7 @@ export default function Logbook({ student, flights, reload, viewer, onProfileCha
   return (
     <>
       <div className="lb-head">
-        <h2>Logbook</h2>
+        <p className="sc-hint">Add each flight. It counts once an instructor signs it.</p>
         <button className="btn btn-primary" onClick={() => { setNotice(null); setEditing({}); }}>+ Add a flight</button>
       </div>
       {!viewer.isStaff && !student.whatsapp && <WhatsappCard student={student} onSaved={onProfileChange} />}

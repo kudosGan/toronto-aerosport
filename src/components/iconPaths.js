@@ -27,6 +27,10 @@ const P = {
   mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 7l8.5 6.5L20.5 7"/>',
   copy: '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/>',
   wallet: '<path d="M3.5 7.5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1"/><rect x="3.5" y="8.5" width="17" height="11" rx="2"/><circle cx="16.5" cy="14" r="1.2"/>',
+  menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
+  logout: '<path d="M9 4.5H6A1.5 1.5 0 0 0 4.5 6v12A1.5 1.5 0 0 0 6 19.5h3"/><path d="M16 8l4 4-4 4M20 12H9.5"/>',
+  login: '<path d="M15 4.5h3A1.5 1.5 0 0 1 19.5 6v12a1.5 1.5 0 0 1-1.5 1.5h-3"/><path d="M10 8l4 4-4 4M14 12H4.5"/>',
+  chevron: '<path d="M6 9l6 6 6-6"/>',
   check: '<path d="M4.5 12.5l5 5 10-11"/>',
 };
 

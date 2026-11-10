@@ -16,16 +16,32 @@ export const MILESTONES = [
 ];
 
 export const today = () => new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD in local time
-export const isOpen = (s) => Boolean(s && s.active && s.access_ends >= today());
+export const isOpen = (s) => Boolean(s && s.active && s.approved !== false && !s.must_change_password && s.access_ends >= today());
+/** A temporary password that has run out its 48 hours. */
+export const tempExpired = (s) => Boolean(s && s.must_change_password && s.temp_password_expires && new Date(s.temp_password_expires) <= new Date());
 
-/** A short ID becomes a student email; anything with an @ is used as typed (so the team can sign in here too). */
+/** A Student ID is looked up for its login. Anything with an @ is used as typed (so the team can sign in here too). */
 export async function signInStudent(idOrEmail, password) {
   const name = idOrEmail.trim();
-  const email = name.includes('@') ? name.toLowerCase() : emailFor(name);
+  let email;
+  if (name.includes('@')) email = name.toLowerCase();
+  else {
+    const { data, error } = await supabase.rpc('login_email', { p_id: name }); // the ID can change once the permit number is added
+    email = !error && data ? data : emailFor(name);
+  }
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) throw error;
   return data.user;
 }
+/** The school team signs in with an email. Anyone who is not on the team is signed straight out again. */
+export async function signInStaff(email, password) {
+  const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim().toLowerCase(), password });
+  if (error) throw error;
+  const r = await getRole();
+  if (!r || r.role !== 'staff') { await supabase.auth.signOut(); throw new Error('NOT_STAFF'); }
+  return data.user;
+}
+
 export const signOutStudent = () => supabase.auth.signOut();
 
 /** Who is signed in? null | { role: 'staff' | 'student' | 'none', user, student? } */
@@ -82,6 +98,71 @@ export async function fetchPending() {
 
 export async function returnFlight(id, note) {
   const { error } = await supabase.from('flights').update({ returned_note: note }).eq('id', id);
+  if (error) throw error;
+}
+
+/** The student saves their own details. The database ignores the locked ones after the school adds the permit. */
+export async function updateMyDetails(f) {
+  const { error } = await supabase.rpc('update_my_details', {
+    p_name: f.full_name || '', p_phone: f.phone || '', p_whatsapp: f.whatsapp || '', p_email: f.contact_email || '',
+    p_citizen_of: f.citizen_of || '', p_category: f.aircraft_category || '', p_date_of_birth: f.date_of_birth || null,
+    p_emergency_name: f.emergency_name || '', p_emergency_phone: f.emergency_phone || '', p_emergency_relationship: f.emergency_relationship || '',
+  });
+  if (error) throw error;
+}
+
+/** The team adds the permit details. This makes the Student ID and locks the student's details. Returns { student_id, changed }. */
+export async function staffSetPermit(userId, f) {
+  const { data, error } = await supabase.rpc('staff_set_permit', {
+    p_user: userId, p_permit_number: f.permit_number || '', p_file_number: f.file_number || '',
+    p_issued_on: f.permit_issued_on || null, p_issued_at: f.permit_issued_at || '',
+    p_valid_to: f.permit_valid_to || null, p_authorized_person: f.authorized_person || '',
+  });
+  if (error) throw error;
+  return data;
+}
+
+/** A new student enrols with their own details. The school adds the permit details and makes the Student ID afterwards. */
+export async function enrolStudent(f) {
+  const { data, error } = await supabase.rpc('enrol_student', {
+    p_full_name: f.full_name, p_email: f.email || '', p_citizen_of: f.citizen_of || '', p_category: f.aircraft_category || '',
+    p_date_of_birth: f.date_of_birth || null, p_phone: f.whatsapp || '', p_whatsapp: f.whatsapp || '',
+    p_emergency_name: f.emergency_name || '', p_emergency_phone: f.emergency_phone || '', p_emergency_relationship: f.emergency_relationship || '',
+  });
+  if (error) throw error;
+  return data;
+}
+
+/** The sign-in page: tell the school you need a new temporary password. Use a Student ID, an email or the WhatsApp number. It always looks the same from outside. */
+export async function requestTempPassword(who) {
+  const { error } = await supabase.rpc('request_temp_password', { p_who: who });
+  if (error) throw error;
+}
+
+/** The team gives a student a new temporary password. Returns { temp_password }. It is shown once, to send on WhatsApp. */
+export async function staffResetPassword(userId) {
+  const { data, error } = await supabase.rpc('staff_reset_password', { p_user: userId });
+  if (error) throw error;
+  return data;
+}
+
+export async function removeEnrolment(userId) {
+  const { error } = await supabase.rpc('remove_enrolment', { p_user: userId });
+  if (error) throw error;
+}
+
+/** The signed-in student's own row, read fresh from the database. */
+export async function fetchMyStudent() {
+  const { data: sess } = await supabase.auth.getSession();
+  const uid = sess.session?.user?.id;
+  if (!uid) return null;
+  const { data, error } = await supabase.from('students').select('*').eq('user_id', uid).maybeSingle();
+  if (error) throw error;
+  return data;
+}
+
+export async function changeMyPassword(password) {
+  const { error } = await supabase.auth.updateUser({ password });
   if (error) throw error;
 }
 
