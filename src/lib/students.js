@@ -250,3 +250,7 @@ export function summarize(flights) {
     takeoffs: count('takeoffs'), landings: count('landings'), count: flights.length,
   };
 }
+
+// ---- Ground lessons: the instructor switches them on for a time frame ----
+/** Can this student open the ground lessons today? The switch must be on and today must be inside the dates. */
+export const groundOpen = (s) => Boolean(s && s.ground_enabled && s.ground_starts && s.ground_ends && s.ground_starts <= today() && today() <= s.ground_ends);

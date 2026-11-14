@@ -3,7 +3,7 @@ import { isDemo } from '../lib/listings';
 import {
   signInStudent, signInStaff, signOutStudent, getRole, fetchStudents, createStudent, updateStudent,
   summarize, isOpen, today, MINIMUMS, MILESTONES, approvedOnly, statusOf, fetchPending, fetchPendingPayments,
-  requestTempPassword, tempExpired, staffResetPassword, removeEnrolment, waLink, portalUrl,
+  requestTempPassword, tempExpired, groundOpen, staffResetPassword, removeEnrolment, waLink, portalUrl,
 } from '../lib/students';
 import { fetchEnquiries } from '../lib/enquiries';
 import { groundTopics } from '../data/learnData';
@@ -106,19 +106,33 @@ function Bar({ label, value, min }) {
 
 const TOPIC_ICONS = ['cog', 'plane', 'shield', 'doc', 'map', 'cloud', 'compass', 'radio', 'user', 'target'];
 
-function GroundSchool() {
+function GroundSchool({ student }) {
+  if (!groundOpen(student)) {
+    const upcoming = student.ground_enabled && student.ground_starts && student.ground_starts > today();
+    const over = student.ground_enabled && student.ground_ends && student.ground_ends < today();
+    return (
+      <div className="tp-card sc-ended">
+        <h2>Ground school is locked</h2>
+        <p>
+          {upcoming ? `Your instructor has allowed ground lessons from ${dateText(student.ground_starts)} to ${dateText(student.ground_ends)}. They open on the first day.`
+            : over ? `Your ground lesson access ended on ${dateText(student.ground_ends)}. Ask your instructor to open it again.`
+              : 'Your instructor opens the ground lessons for a set time. Ask your instructor to give you access.'}
+        </p>
+      </div>
+    );
+  }
   return (
     <>
       <div className="sc-banner-note">
         <Icon name="cap" size={34} />
-        <p><strong>Your online ground school.</strong> Lessons appear here as the school adds them. You can open them while your student access is active.</p>
+        <p><strong>Your online ground school.</strong> Your instructor has opened the lessons from {dateText(student.ground_starts)} to {dateText(student.ground_ends)}.</p>
       </div>
       <ul className="sc-lessons">
         {groundTopics.map((t, i) => (
           <li key={t}>
             <span className="sc-lessons__icon"><Icon name={TOPIC_ICONS[i % TOPIC_ICONS.length]} size={26} /></span>
             <div><strong>{t}</strong><small>Lesson {i + 1}</small></div>
-            <em><Icon name="lock" size={15} />Coming soon</em>
+            <em><Icon name="clock" size={15} />Coming soon</em>
           </li>
         ))}
       </ul>
@@ -235,7 +249,7 @@ function StudentView({ student, viewer, onSignOut, onProfileChange }) {
           {error && <p className="tp-err">{error}</p>}
           {section === 'overview' && <Overview flights={flights} goLogbook={() => setSection('logbook')} />}
           {section === 'logbook' && <Logbook student={student} flights={flights} reload={reload} viewer={viewer} onProfileChange={onProfileChange} payments={pays} reloadPayments={reloadPays} />}
-          {section === 'school' && <GroundSchool />}
+          {section === 'school' && <GroundSchool student={student} />}
           {section === 'pay' && <Payments student={student} viewer={viewer} rows={pays} reload={reloadPays} error={payError} flights={flights} />}
         </>
       )}
@@ -243,7 +257,7 @@ function StudentView({ student, viewer, onSignOut, onProfileChange }) {
   );
 }
 
-const STAFF_TABS = [['overview', 'home', 'Overview'], ['logbook', 'book', 'Logbook'], ['pay', 'wallet', 'Payments'], ['profile', 'user', 'Profile'], ['access', 'lock', 'Access']];
+const STAFF_TABS = [['overview', 'home', 'Overview'], ['logbook', 'book', 'Logbook'], ['pay', 'wallet', 'Payments'], ['profile', 'user', 'Profile'], ['ground', 'cap', 'Ground school'], ['access', 'lock', 'Access']];
 
 /** The team manages a student's access and gives a new temporary password. */
 function AccessPanel({ student, onUpdate, onReset }) {
@@ -265,6 +279,38 @@ function AccessPanel({ student, onUpdate, onReset }) {
       <h3 className="pf-sub">Password</h3>
       <p className="sc-hint">Use this when a student has forgotten their password. It makes a temporary password to send on WhatsApp. It works for 48 hours.</p>
       <div className="sc-student__tools"><button onClick={() => onReset(student)}>New temporary password</button></div>
+    </section>
+  );
+}
+
+/** The instructor switches ground lessons on for one student, between two dates. */
+function GroundPanel({ student, onUpdate }) {
+  const [on, setOn] = useState(Boolean(student.ground_enabled));
+  const [from, setFrom] = useState(student.ground_starts || today());
+  const [to, setTo] = useState(student.ground_ends || '');
+  const bad = on && (!from || !to || to < from);
+  const changed = on !== Boolean(student.ground_enabled) || (on && (from !== (student.ground_starts || '') || to !== (student.ground_ends || '')));
+  const save = () => onUpdate(
+    on ? { ground_enabled: true, ground_starts: from, ground_ends: to } : { ground_enabled: false },
+    on ? `Ground lessons are on for ${student.full_name} from ${dateText(from)} to ${dateText(to)}.` : `Ground lessons are off for ${student.full_name}.`,
+  );
+  return (
+    <section className="tp-card sc-block">
+      <h2>Ground school access</h2>
+      <p className="sc-hint">{groundOpen(student) ? `Open now, until ${dateText(student.ground_ends)}.` : 'The student cannot open the ground lessons right now.'}</p>
+      <label className="sc-switch">
+        <input type="checkbox" role="switch" checked={on} onChange={(e) => setOn(e.target.checked)} />
+        <span className="sc-switch__track"><i /></span>
+        <b>{on ? 'On' : 'Off'}</b>
+      </label>
+      {on && (
+        <div className="sc-student__tools">
+          <label className="enr-item__date">Begins<input type="date" value={from} onChange={(e) => setFrom(e.target.value)} /></label>
+          <label className="enr-item__date">Ends<input type="date" value={to} min={from} onChange={(e) => setTo(e.target.value)} /></label>
+        </div>
+      )}
+      {bad && <p className="tp-err">Choose a begin date and an end date that is not before it.</p>}
+      <div className="sc-student__tools"><button disabled={!changed || bad} onClick={save}>Save</button></div>
     </section>
   );
 }
@@ -297,6 +343,7 @@ function StaffStudent({ student, viewer, onBack, startTab, onChanged, onUpdate, 
       {tab === 'logbook' && <Logbook student={student} flights={flights} reload={reload} viewer={viewer} payments={pays} reloadPayments={reloadPays} />}
       {tab === 'pay' && <Payments student={student} viewer={viewer} rows={pays} reload={reloadPays} error={payError} flights={flights} />}
       {tab === 'profile' && <Profile student={student} isStaff onSaved={onChanged} />}
+      {tab === 'ground' && <GroundPanel key={`${student.ground_enabled}${student.ground_starts}${student.ground_ends}`} student={student} onUpdate={onUpdate} />}
       {tab === 'access' && <AccessPanel student={student} onUpdate={onUpdate} onReset={onReset} />}
     </>
   );
